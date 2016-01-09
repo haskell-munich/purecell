@@ -10,7 +10,7 @@ import Data.Traversable
 import Data.Maybe
 import Data.Foldable
 
-type Line = Array Number
+type Line = Array Int
 
 type Game = Array Line
 
@@ -18,10 +18,10 @@ type Game = Array Line
 
 initGame :: forall e. Int -> Eff (random :: RANDOM | e) Game
 initGame n = do
-  xs <- sequence $ map (const random) l
+  xs <- sequence $ map (const (map f random)) l
   return [xs]
   where l = (0 .. n)
-
+        f x = if (x < 0.5) then 0 else 1
 
 main :: forall e. Eff (console :: CONSOLE, random :: RANDOM | e) Unit
 main = do
