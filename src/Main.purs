@@ -14,8 +14,6 @@ type Line = Array Int
 
 type Game = Array Line
 
--- [l] --  sequence <<< (map (const randomBool) l)
-
 initGame :: forall e. Int -> Eff (random :: RANDOM | e) Game
 initGame n = do
   xs <- sequence $ map (const (map f random)) l
