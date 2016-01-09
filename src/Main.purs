@@ -1,5 +1,12 @@
 module Main where
 
+
+import qualified Thermite as T
+
+import qualified React as R
+import qualified React.DOM as R
+import qualified React.DOM.Props as RP
+
 import Prelude
 import Control.Monad.Eff
 import Control.Monad.Eff.Console
@@ -15,14 +22,19 @@ type Line = Array Int
 
 type Game = Array Line
 
--- [l] --  sequence <<< (map (const randomBool) l)
+data Action = NextLine
+
+
+render :: T.Render Game _ Action
+render ctx s _ _ = [R.div' [R.text "ho"]] -- map renderLine s)
+    -- where renderLine line = R.ul'  (R.text "hi") -- (map (R.li' <<< R.text) line)
 
 initGame :: forall e. Int -> Eff (random :: RANDOM | e) Game
 initGame n = do
   xs <- sequence $ map (const (map f random)) l
   return [xs]
-  where l = (0 .. n)
-        f x = if (x < 0.9) then 0 else 1
+    where l = (0 .. n)
+          f x = if (x < 0.5) then 0 else 1
 
 rule110 [0, 0, 0] = 0
 rule110 [0, 0, 1] = 1
@@ -66,6 +78,14 @@ test = do
     Main.develop 150 (snoc (replicate 150 0) 1)
   return unit
 
-main :: forall e. Eff (console :: CONSOLE, random :: RANDOM | e) Unit
+
+performAction :: T.PerformAction _ Game _ Action
+performAction _ _ state update = update state
+
+spec :: T.Spec _ Game _ Action
+spec = T.simpleSpec performAction render
+
 main = do
-  test
+  let component = T.createClass spec [[1,0,1]]
+  R.body >>= R.render (R.createFactory component {})
+
