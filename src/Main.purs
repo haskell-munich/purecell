@@ -5,6 +5,9 @@ import Control.Monad.Eff
 import Control.Monad.Eff.Console
 import Control.Monad.Eff.Random
 
+import Text.Html
+import Text.Html5
+
 import Data.Array
 import Data.Traversable
 import Data.Maybe
@@ -22,6 +25,7 @@ initGame n = do
   return [xs]
   where l = (0 .. n)
         f x = if (x < 0.5) then 0 else 1
+
 
 main :: forall e. Eff (console :: CONSOLE, random :: RANDOM | e) Unit
 main = do
